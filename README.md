@@ -139,7 +139,9 @@ This project demonstrates a basic DevSecOps pipeline that integrates:
 It serves as a foundation for building more advanced pipelines.
 
 ---
+## 🌐 Live Demo
 
+Jenkins URL:( http://20.63.83.172:8080/job/git-pipeline/3 )
 ## 👨‍💻 Author
 
 Sejal Sakhala
