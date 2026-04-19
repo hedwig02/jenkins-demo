@@ -2,11 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Check') {
+        stage('Check Tools') {
             steps {
-                echo 'Pipeline is working'
+                sh 'echo "User:"'
+                sh 'whoami'
+
+                sh 'echo "Current Directory:"'
                 sh 'pwd'
+
+                sh 'echo "List workspace:"'
                 sh 'ls -la'
+
+                sh 'echo "Check /opt:"'
+                sh 'ls /opt || true'
+
+                sh 'echo "Check snyk:"'
+                sh 'which snyk || true'
+
+                sh 'echo "Check git:"'
+                sh 'which git || true'
+
+                sh 'echo "Check java:"'
+                sh 'java -version || true'
             }
         }
     }
