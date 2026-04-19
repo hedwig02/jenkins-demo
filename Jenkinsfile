@@ -1,14 +1,32 @@
 pipeline {
     agent any
 
+    environment {
+        SCANNER_HOME = '/opt/sonar-scanner'
+    }
+
     stages {
-        stage('Check Tools') {
+        stage('Checkout') {
             steps {
-                sh 'whoami'
-                sh 'which git'
-                sh 'which snyk'
-                sh 'java -version'
-                sh '/opt/sonar-scanner/bin/sonar-scanner -v'
+                git branch: 'main', url: 'https://github.com/hedwig02/jenkins-demo.git'
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Sonar Scanner Version') {
+            steps {
+                sh '$SCANNER_HOME/bin/sonar-scanner -v'
+            }
+        }
+
+        stage('Snyk Version') {
+            steps {
                 sh 'snyk --version'
             }
         }
