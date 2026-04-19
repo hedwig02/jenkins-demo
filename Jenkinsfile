@@ -2,28 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Tools') {
+        stage('Checkout Confirm') {
             steps {
-                sh 'echo "User:"'
-                sh 'whoami'
-
-                sh 'echo "Current Directory:"'
+                echo 'Checkout successful'
                 sh 'pwd'
-
-                sh 'echo "List workspace:"'
                 sh 'ls -la'
+            }
+        }
 
-                sh 'echo "Check /opt:"'
-                sh 'ls /opt || true'
-
-                sh 'echo "Check snyk:"'
-                sh 'which snyk || true'
-
-                sh 'echo "Check git:"'
-                sh 'which git || true'
-
-                sh 'echo "Check java:"'
-                sh 'java -version || true'
+        stage('System Info') {
+            steps {
+                sh 'whoami'
+                sh 'which git'
+                sh 'java -version'
             }
         }
     }
