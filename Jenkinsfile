@@ -2,19 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Confirm') {
-            steps {
-                echo 'Checkout successful'
-                sh 'pwd'
-                sh 'ls -la'
-            }
-        }
-
-        stage('System Info') {
+        stage('Check Tools') {
             steps {
                 sh 'whoami'
                 sh 'which git'
+                sh 'which snyk'
                 sh 'java -version'
+                sh '/opt/sonar-scanner/bin/sonar-scanner -v'
+                sh 'snyk --version'
+            }
+        }
+    }
+}
             }
         }
     }
