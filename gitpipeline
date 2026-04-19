@@ -1,0 +1,3 @@
+<h1>Git Pipeline Test 🚀</h1>
+FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/index.html
