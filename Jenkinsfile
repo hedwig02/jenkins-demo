@@ -4,6 +4,8 @@ pipeline {
     environment {
         SCANNER_HOME = '/opt/sonar-scanner'
         SNYK_TOKEN = credentials('snyk-token')
+        IMAGE_NAME = 'jenkins-demo-app'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
@@ -36,6 +38,18 @@ pipeline {
         stage('Sonar Scanner Check') {
             steps {
                 sh '$SCANNER_HOME/bin/sonar-scanner -v'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+            }
+        }
+
+        stage('List Docker Images') {
+            steps {
+                sh 'docker images'
             }
         }
     }
