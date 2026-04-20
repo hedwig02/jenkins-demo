@@ -110,23 +110,17 @@ In Jenkins:
 
 ---
 
-## 📸 Screenshots (Add Here)
+## 📸 Screenshots
 
-Include screenshots of:
+Include the following screenshots:
 
-* Jenkins successful build
-* Pipeline stages
+* Jenkins successful build (green ✔)
+* Pipeline stages execution
 * Snyk scan output
+* Console output showing test results
 
 ---
 
-## 🚧 Future Improvements
-
-* Integrate **SonarQube Server** for full code analysis
-* Add **Docker build and push to DockerHub**
-* Deploy application to cloud (Azure)
-
----
 ## ✅ Actual Pipeline Output
 
 The Jenkins pipeline executed successfully with the following results:
@@ -138,13 +132,25 @@ The Jenkins pipeline executed successfully with the following results:
 * ✔ Sonar Scanner verified successfully
 * ✔ Jenkins build status: **SUCCESS**
 
-### 🔍 Snyk Scan Result
+---
+
+## 🔍 Snyk Scan Result
 
 ```text
 ✔ Tested project for known issues, no vulnerable paths found.
 ```
 
 This confirms that the application dependencies are secure and free from known vulnerabilities.
+
+---
+
+## 🚧 Future Improvements
+
+* Integrate **SonarQube Server** for full code analysis
+* Add **Docker build and push to DockerHub**
+* Deploy application to cloud (Azure)
+
+---
 
 ## 🎯 Conclusion
 
@@ -157,10 +163,14 @@ This project demonstrates a basic DevSecOps pipeline that integrates:
 It serves as a foundation for building more advanced pipelines.
 
 ---
+
 ## 🌐 Live Demo
 
-Jenkins URL:( http://20.63.83.172:8080/job/git-pipeline/3 )
+Jenkins Build URL:
+http://20.63.83.172:8080/job/git-pipeline/3
+---
+
 ## 👨‍💻 Author
 
-Sejal Sakhala
+**Sejal Sakhala**
 DevSecOps Bootcamp Project
