@@ -1,9 +1,7 @@
-{
-  "name": "jenkins-demo",
-  "version": "1.0.0",
-  "description": "Simple DevSecOps demo project",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test.js"
-  }
+"dependencies": {
+  "express": "^4.19.2"
+},
+"scripts": {
+  "test": "node test.js",
+  "start": "node index.js"
 }
