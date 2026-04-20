@@ -127,6 +127,24 @@ Include screenshots of:
 * Deploy application to cloud (Azure)
 
 ---
+## ✅ Actual Pipeline Output
+
+The Jenkins pipeline executed successfully with the following results:
+
+* ✔ Dependencies installed successfully (`npm install`)
+* ✔ Test execution passed (`Test passed`)
+* ✔ Snyk vulnerability scan completed
+* ✔ No vulnerabilities found in the project
+* ✔ Sonar Scanner verified successfully
+* ✔ Jenkins build status: **SUCCESS**
+
+### 🔍 Snyk Scan Result
+
+```text
+✔ Tested project for known issues, no vulnerable paths found.
+```
+
+This confirms that the application dependencies are secure and free from known vulnerabilities.
 
 ## 🎯 Conclusion
 
