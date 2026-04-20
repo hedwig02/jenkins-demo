@@ -3,15 +3,10 @@ pipeline {
 
     environment {
         SCANNER_HOME = '/opt/sonar-scanner'
+        SNYK_TOKEN = credentials('snyk-token')
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/hedwig02/jenkins-demo.git'
-            }
-        }
-
         stage('List Files') {
             steps {
                 sh 'pwd'
@@ -19,15 +14,28 @@ pipeline {
             }
         }
 
-        stage('Sonar Scanner Version') {
+        stage('Install Dependencies') {
             steps {
-                sh '$SCANNER_HOME/bin/sonar-scanner -v'
+                sh 'npm install'
             }
         }
 
-        stage('Snyk Version') {
+        stage('Run Tests') {
             steps {
-                sh 'snyk --version'
+                sh 'npm test'
+            }
+        }
+
+        stage('Snyk Scan') {
+            steps {
+                sh 'snyk auth $SNYK_TOKEN'
+                sh 'snyk test || true'
+            }
+        }
+
+        stage('Sonar Scanner Check') {
+            steps {
+                sh '$SCANNER_HOME/bin/sonar-scanner -v'
             }
         }
     }
