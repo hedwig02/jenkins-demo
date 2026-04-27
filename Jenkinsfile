@@ -36,11 +36,11 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh 'npm test || true'
-            }
-        }
+       stage('Run Tests') {
+    steps {
+        sh 'timeout 20s npm test || true'
+    }
+}
 
         stage('SonarQube Scan') {
             steps {
