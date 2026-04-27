@@ -18,10 +18,10 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
-    steps {
-        git branch: 'main', url: 'https://github.com/hedwig02/jenkins-demo.git'
-    }
-}
+            steps {
+                git branch: 'main', url: 'https://github.com/hedwig02/jenkins-demo.git'
+            }
+        }
 
         stage('List Files') {
             steps {
@@ -36,18 +36,24 @@ pipeline {
             }
         }
 
-       stage('Run Tests') {
-    steps {
-        sh 'timeout 20s npm test || true'
-    }
-}
+        stage('Run Tests') {
+            steps {
+                sh 'timeout 20s npm test || true'
+            }
+        }
 
         stage('SonarQube Scan') {
             steps {
                 script {
                     def scannerHome = tool 'sonar-scanner'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner || true"
+                        sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=jenkins-demo \
+                        -Dsonar.projectName=jenkins-demo \
+                        -Dsonar.sources=. \
+                        || true
+                        """
                     }
                 }
             }
