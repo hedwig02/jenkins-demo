@@ -1,10 +1,9 @@
 pipeline {
     agent any
 
-   tools {
-    nodejs 'nodejs'
-    sonarScanner 'sonar-scanner'
-}
+    tools {
+        nodejs 'nodejs'
+    }
 
     environment {
         ACR_NAME = "sejalregistry2026"
@@ -17,6 +16,13 @@ pipeline {
     }
 
     stages {
+
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/hedwig02/jenkins-demo.git'
+            }
+        }
+
         stage('List Files') {
             steps {
                 sh 'pwd'
@@ -36,16 +42,16 @@ pipeline {
             }
         }
 
-      stage('SonarQube Scan') {
-    steps {
-        script {
-            def scannerHome = tool 'sonar-scanner'
-            withSonarQubeEnv('SonarQube') {
-                sh "${scannerHome}/bin/sonar-scanner || true"
+        stage('SonarQube Scan') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner || true"
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Docker Build') {
             steps {
@@ -82,8 +88,18 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 sh '''
-                kubectl create deployment jenkins-demo-app --image=$ACR_NAME.azurecr.io/jenkins-demo-app:latest --dry-run=client -o yaml | kubectl apply -f -
-                kubectl expose deployment jenkins-demo-app --type=LoadBalancer --port=80 --target-port=3000 --dry-run=client -o yaml | kubectl apply -f -
+                az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+
+                kubectl create deployment jenkins-demo-app \
+                --image=$ACR_NAME.azurecr.io/jenkins-demo-app:latest \
+                --dry-run=client -o yaml | kubectl apply -f -
+
+                kubectl expose deployment jenkins-demo-app \
+                --type=LoadBalancer \
+                --port=80 \
+                --target-port=3000 \
+                --dry-run=client -o yaml | kubectl apply -f -
+
                 kubectl get pods
                 kubectl get svc
                 '''
