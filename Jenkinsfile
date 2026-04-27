@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodejs'
-        sonarScanner 'sonar-scanner'
-    }
+   tools {
+    nodejs 'nodejs'
+    sonarScanner 'sonar-scanner'
+}
 
     environment {
         ACR_NAME = "sejalregistry2026"
@@ -36,13 +36,16 @@ pipeline {
             }
         }
 
-        stage('SonarQube Scan') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner || true'
-                }
+      stage('SonarQube Scan') {
+    steps {
+        script {
+            def scannerHome = tool 'sonar-scanner'
+            withSonarQubeEnv('SonarQube') {
+                sh "${scannerHome}/bin/sonar-scanner || true"
             }
         }
+    }
+}
 
         stage('Docker Build') {
             steps {
