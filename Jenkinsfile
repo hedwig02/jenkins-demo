@@ -18,10 +18,10 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
-            steps {
-                git 'https://github.com/hedwig02/jenkins-demo.git'
-            }
-        }
+    steps {
+        git branch: 'main', url: 'https://github.com/hedwig02/jenkins-demo.git'
+    }
+}
 
         stage('List Files') {
             steps {
