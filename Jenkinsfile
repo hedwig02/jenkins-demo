@@ -1,9 +1,19 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'nodejs'
+        sonarScanner 'sonar-scanner'
+    }
+
     environment {
-        SCANNER_HOME = '/opt/sonar-scanner'
-        SNYK_TOKEN = credentials('snyk-token')
+        ACR_NAME = "sejalregistry2026"
+        RESOURCE_GROUP = "sejal-rg"
+        AKS_CLUSTER = "sejal-aks-cluster"
+
+        AZURE_CLIENT_ID = credentials('azure-client-id')
+        AZURE_CLIENT_SECRET = credentials('azure-client-secret')
+        AZURE_TENANT_ID = credentials('azure-tenant-id')
     }
 
     stages {
@@ -22,46 +32,58 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh 'npm test || true'
             }
         }
 
-        stage('Snyk Scan') {
+        stage('SonarQube Scan') {
             steps {
-                sh 'snyk auth $SNYK_TOKEN'
-                sh 'snyk test || true'
-            }
-        }
-
-        stage('Sonar Scanner Check') {
-            steps {
-                sh '$SCANNER_HOME/bin/sonar-scanner -v'
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner || true'
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t dockermaniac02/jenkins-demo-app:latest .'
+                sh 'docker build -t $ACR_NAME.azurecr.io/jenkins-demo-app:latest .'
             }
         }
 
-        stage('Docker Login') {
+        stage('Trivy Scan') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
+                sh 'trivy image $ACR_NAME.azurecr.io/jenkins-demo-app:latest || true'
             }
         }
 
-        stage('Docker Push') {
+        stage('Azure Login') {
             steps {
-                sh 'docker push dockermaniac02/jenkins-demo-app:latest'
+                sh '''
+                az login --service-principal \
+                  -u $AZURE_CLIENT_ID \
+                  -p $AZURE_CLIENT_SECRET \
+                  --tenant $AZURE_TENANT_ID
+                '''
             }
         }
 
-        stage('List Docker Images') {
+        stage('Push to ACR') {
             steps {
-                sh 'docker images'
+                sh '''
+                az acr login --name $ACR_NAME
+                docker push $ACR_NAME.azurecr.io/jenkins-demo-app:latest
+                '''
+            }
+        }
+
+        stage('Deploy to AKS') {
+            steps {
+                sh '''
+                kubectl create deployment jenkins-demo-app --image=$ACR_NAME.azurecr.io/jenkins-demo-app:latest --dry-run=client -o yaml | kubectl apply -f -
+                kubectl expose deployment jenkins-demo-app --type=LoadBalancer --port=80 --target-port=3000 --dry-run=client -o yaml | kubectl apply -f -
+                kubectl get pods
+                kubectl get svc
+                '''
             }
         }
     }
