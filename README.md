@@ -1,81 +1,84 @@
-# 🚀 DevSecOps Pipeline Demo (Jenkins + Snyk + Sonar Scanner)
-
----
+# DevSecOps CI/CD Pipeline on Azure (Jenkins + SonarQube + Trivy + AKS)
 
 ## 📌 Project Overview
 
-This project demonstrates a simple **DevSecOps CI/CD pipeline** using:
+This project demonstrates an end-to-end DevSecOps CI/CD pipeline using Jenkins and Azure services.
 
-```text
-GitHub → Jenkins → npm install → npm test → Snyk → Sonar Scanner
-```
+The pipeline automates:
 
-The goal is to show how code moves through a pipeline where it is:
-
-* built
-* tested
-* scanned for vulnerabilities
+* Code build
+* Testing
+* Security scanning
+* Containerization
+* Deployment to Kubernetes
 
 ---
 
 ## 🛠️ Tools Used
 
-* **GitHub** – Source code repository
-* **Jenkins** – CI/CD pipeline automation
-* **Node.js & npm** – Application runtime
-* **Snyk** – Security vulnerability scanning
-* **Sonar Scanner** – Code quality analysis tool
+* GitHub – Source code repository
+* Jenkins – CI/CD pipeline automation
+* Node.js & npm – Application runtime
+* SonarQube – Code quality & vulnerability scanning (SAST)
+* Docker – Containerization
+* Trivy – Container image security scanning
+* Azure CLI – Cloud interaction
+* Azure Container Registry (ACR) – Image storage
+* Azure Kubernetes Service (AKS) – Deployment platform
 
 ---
 
-## 📂 Project Structure
+## 🔄 Pipeline Flow
 
-```text
-jenkins-demo/
-├── index.js        # Application code
-├── test.js         # Simple test file
-├── package.json    # Node.js configuration
-├── Jenkinsfile     # Jenkins pipeline
-└── README.md       # Project documentation
-```
+GitHub → Jenkins → npm install → npm test → SonarQube → Docker build → Trivy scan → Push to ACR → Deploy to AKS
 
 ---
 
 ## ⚙️ Pipeline Stages
 
-The Jenkins pipeline includes the following stages:
+1️⃣ Checkout Code
 
-### 1️⃣ List Files
+* Jenkins pulls code from GitHub
 
-Displays workspace and verifies code checkout.
-
-### 2️⃣ Install Dependencies
+2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Run Tests
+3️⃣ Run Tests
 
 ```bash
 npm test
 ```
 
-### 4️⃣ Snyk Scan
+4️⃣ SonarQube Scan
 
-* Authenticates using Snyk token
-* Scans project for vulnerabilities
+* Performs static code analysis
+
+5️⃣ Docker Build
+
+* Builds container image
+
+6️⃣ Trivy Scan
+
+* Scans Docker image for vulnerabilities
+
+7️⃣ Azure Login
+
+* Uses Service Principal
+
+8️⃣ Push to ACR
 
 ```bash
-snyk test
+docker push
 ```
 
-### 5️⃣ Sonar Scanner Check
-
-* Verifies Sonar Scanner installation
+9️⃣ Deploy to AKS
 
 ```bash
-sonar-scanner -v
+kubectl create deployment
+kubectl expose deployment
 ```
 
 ---
@@ -84,93 +87,65 @@ sonar-scanner -v
 
 In Jenkins:
 
-* Add **Snyk Token**
-
-  * Type: `Secret Text`
-  * ID: `snyk-token`
-
----
-
-## ▶️ How to Run
-
-1. Push code to GitHub
-2. Jenkins pulls the repository
-3. Click **Build Now** in Jenkins
-4. Pipeline executes all stages
+* Azure Client ID
+* Azure Client Secret
+* Azure Tenant ID
+* SonarQube Token
 
 ---
 
-## ✅ Expected Output
+## 📂 Project Structure
 
-* ✔ Dependencies installed successfully
-* ✔ Tests passed
-* ✔ Snyk scan executed
-* ✔ Sonar Scanner verified
-* ✔ Jenkins build shows **SUCCESS**
+```
+jenkins-demo/
+├── index.js
+├── test.js
+├── package.json
+├── Dockerfile
+├── Jenkinsfile
+└── README.md
+```
+
+---
+
+## ✅ Output
+
+✔ Jenkins pipeline executed successfully
+✔ Docker image built and pushed to ACR
+✔ Application deployed on AKS
+✔ Pods and services running
+✔ Application accessible via external IP
+✔ Security scanning performed using SonarQube and Trivy
 
 ---
 
 ## 📸 Screenshots
 
-Include the following screenshots:
-
-* Jenkins successful build (green ✔)
-* Pipeline stages execution
-* Snyk scan output
-* Console output showing test results
-
----
-
-## ✅ Actual Pipeline Output
-
-The Jenkins pipeline executed successfully with the following results:
-
-* ✔ Dependencies installed successfully (`npm install`)
-* ✔ Test execution passed (`Test passed`)
-* ✔ Snyk vulnerability scan completed
-* ✔ No vulnerabilities found in the project
-* ✔ Sonar Scanner verified successfully
-* ✔ Jenkins build status: **SUCCESS**
-
----
-
-## 🔍 Snyk Scan Result
-
-```text
-✔ Tested project for known issues, no vulnerable paths found.
-```
-
-This confirms that the application dependencies are secure and free from known vulnerabilities.
+* Jenkins pipeline success
+* SonarQube dashboard
+* Trivy scan output
+* ACR repository image
+* AKS pods and services
+* Application running in browser
 
 ---
 
 ## 🚧 Future Improvements
 
-* Integrate **SonarQube Server** for full code analysis
-* Add **Docker build and push to DockerHub**
-* Deploy application to cloud (Azure)
+* Use Helm for deployment
+* Add Ingress controller
+* Implement autoscaling (HPA)
+* Integrate monitoring (Azure Monitor / Prometheus)
 
 ---
 
 ## 🎯 Conclusion
 
-This project demonstrates a basic DevSecOps pipeline that integrates:
+This project demonstrates a complete DevSecOps pipeline integrating CI/CD, security scanning, containerization, and Kubernetes deployment on Azure.
 
-* CI/CD automation
-* testing
-* security scanning
-
-It serves as a foundation for building more advanced pipelines.
-
----
-
-## 🌐 Live Demo
-
-Jenkins Build URL:
-http://20.63.83.172:8080/job/git-pipeline/3
 ---
 
 ## 👨‍💻 Author
 
-**Sejal Sakhala**
+Sejal Sakhala
 DevSecOps Bootcamp Project
